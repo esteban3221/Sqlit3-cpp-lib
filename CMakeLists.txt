@@ -6,7 +6,6 @@ set(CMAKE_CXX_STANDARD 20)
 find_package(SQLite3 REQUIRED)
 find_library(SQLITE3_LIBRARY sqlite3 REQUIRED)
 
-
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/include)
 
 add_library(Sqlite-cpp SHARED
