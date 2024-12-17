@@ -10,6 +10,7 @@ find_package(SQLite3 REQUIRED)
 # Define la biblioteca compartida
 add_library(Sqlite-cpp SHARED
     src/sqlite.cpp
+    src/value_proxy.cpp
 )
 
 # Asegúrate de incluir el directorio de headers
