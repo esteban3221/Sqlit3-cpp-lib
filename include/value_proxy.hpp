@@ -16,7 +16,7 @@ public:
 
     template <typename T>
     T get_as() const {
-        std::istringstream iss(value);
+        std::istringstream iss;
         T result;
         if (!(iss >> result)) {
             throw std::runtime_error("Failed to convert value to requested type.");
@@ -25,14 +25,14 @@ public:
     }
 };
 
+template <typename T,typename K>
 class MapWithGetAs {
 private:
-    std::map<std::string, std::string> data;
+    std::map<T, K> data;
 
 public:
-    void insert(const std::string& key, const std::string& value);
-
-    ValueProxy operator[](const std::string& key) const;
+    void insert(const T& key, K& value);
+    ValueProxy operator[](const T& key) const;
 };
 
 
