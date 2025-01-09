@@ -23,7 +23,7 @@ namespace SQLite3
         ~SQLite();
         const bool open();
         const bool is_created();
-        void command(std::string);
+        void command(const std::string &);
         const int get_rc() const;
         std::map<std::string, std::vector<std::string>> &get_result() const;
 

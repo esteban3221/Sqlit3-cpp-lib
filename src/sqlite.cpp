@@ -41,9 +41,9 @@ namespace SQLite3
         return not get_result().empty();
     }
 
-    void SQLite::command(std::string sql_)
+    void SQLite::command(const std::string &sql)
     {
-        sql = sql_;
+        result.clear();
         rc = sqlite3_exec(db, sql.c_str(), callback, nullptr, &zErrMsg);
         if (rc != SQLITE_OK)
         {
