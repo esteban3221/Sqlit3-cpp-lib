@@ -2,8 +2,11 @@
 #include <sqlite3.h>
 #include <iostream>
 #include <vector>
+#include <mutex>
+#include <memory>
 #include <map>
 
+using ResultMap = std::map<std::string, std::vector<std::string>>;
 namespace SQLite3
 {
     class SQLite
@@ -14,23 +17,20 @@ namespace SQLite3
         sqlite3_stmt *stmt;
         char *zErrMsg = 0;
         int rc;
-        std::string sql;
         static int callback(void *, int, char **, char **);
-        static inline std::map<std::string, std::vector<std::string>> result;
 
     public:
         SQLite(const std::string &DB_);
         ~SQLite();
         const bool open();
         const bool is_created();
-        void command(const std::string &);
         const int get_rc() const;
-        std::map<std::string, std::vector<std::string>> &get_result() const;
 
         template <typename... Args>
-        void command(const std::string &sql, Args &&...args)
+        std::shared_ptr<ResultMap> command(const std::string &sql, Args &&...args)
         {
-            result.clear();
+            // std::lock_guard<std::mutex> lock(db_mutex);
+            auto result = std::make_shared<ResultMap>();
 
             sqlite3_stmt *stmt;
             rc = sqlite3_prepare_v2(db, sql.c_str(), sql.length(), &stmt, NULL);
@@ -50,7 +50,7 @@ namespace SQLite3
                 {
                     const char *columnName = sqlite3_column_name(stmt, i);
                     const char *value = reinterpret_cast<const char *>(sqlite3_column_text(stmt, i));
-                    result[columnName].emplace_back(value ? value : "");
+                    (*result)[columnName].emplace_back(value ? value : "");
                 }
             }
 
@@ -61,6 +61,8 @@ namespace SQLite3
                 std::string error = "Error al ejecutar la sentencia SQL: " + std::string(sqlite3_errmsg(db)) + "\nSQL: " + sql + "\n";
                 throw std::runtime_error(error);
             }
+
+            return result;
         }
 
         template <typename T>
