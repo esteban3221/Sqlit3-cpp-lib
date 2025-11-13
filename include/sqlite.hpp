@@ -34,6 +34,7 @@ namespace SQLite3
 
             sqlite3_stmt *stmt;
             rc = sqlite3_prepare_v2(db, sql.c_str(), sql.length(), &stmt, NULL);
+            
             if (rc != SQLITE_OK)
             {
                 std::string error = "Error al compilar la sentencia SQL: " + std::string(sqlite3_errmsg(db)) + "\nSQL: " + sql + "\n";
