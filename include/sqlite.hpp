@@ -17,6 +17,7 @@ namespace SQLite3
         sqlite3_stmt *stmt;
         char *zErrMsg = 0;
         int rc;
+        bool debug = false;
         static int callback(void *, int, char **, char **);
 
     public:
@@ -26,10 +27,16 @@ namespace SQLite3
         const bool is_created();
         const int get_rc() const;
 
+        bool& property_debug() { return debug; }
+
+
+
         template <typename... Args>
         std::shared_ptr<ResultMap> command(const std::string &sql, Args &&...args)
         {
-            // std::lock_guard<std::mutex> lock(db_mutex);
+            if (debug)
+                std::cout << "SQL: " << sql << std::endl;
+        
             auto result = std::make_shared<ResultMap>();
 
             sqlite3_stmt *stmt;
