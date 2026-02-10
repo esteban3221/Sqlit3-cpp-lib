@@ -7,6 +7,10 @@
 #include <map>
 
 using ResultMap = std::map<std::string, std::vector<std::string>>;
+
+template <typename>
+struct always_false : std::false_type {};
+
 namespace SQLite3
 {
     class SQLite
@@ -84,10 +88,21 @@ namespace SQLite3
             {
                 rc = sqlite3_bind_text(stmt, index, value, -1, SQLITE_STATIC);
             }
+            // para std::string y otros tipos que se pueden convertir a std::string
+            else if constexpr (std::is_convertible_v<std::remove_reference_t<T>, std::string>)
+            {
+                std::string strValue = static_cast<std::string>(value);
+                rc = sqlite3_bind_text(stmt, index, strValue.c_str(), static_cast<int>(strValue.size()), SQLITE_TRANSIENT);
+            }
+            else
+            {
+                static_assert(always_false<T>::value, "Tipo no soportado para bindArgument");
+            }
 
             if (rc != SQLITE_OK)
             {
-                throw std::runtime_error("Error al bindear el argumento");
+                std::string error = "Error al bindear el argumento: " + std::string(sqlite3_errmsg(db));
+                throw std::runtime_error(error);
             }
         }
     };
