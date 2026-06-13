@@ -17,4 +17,4 @@ add_library(Sqlite-cpp SHARED
 target_include_directories(Sqlite-cpp PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/include)
 
 # Enlaza SQLite3 a la biblioteca
-target_link_libraries(Sqlite-cpp PUBLIC SQLite::SQLite3)
+target_link_libraries(Sqlite-cpp PUBLIC SQLite3::SQLite3)
