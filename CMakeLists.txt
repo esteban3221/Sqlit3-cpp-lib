@@ -17,7 +17,7 @@ add_library(Sqlite-cpp SHARED
 target_include_directories(Sqlite-cpp PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/include)
 
 # Enlaza SQLite3 a la biblioteca
-if(arm OR aarch64)
+if(CMAKE_SYSTEM_PROCESSOR MATCHES "aarch64|arm64")
     target_link_libraries(Sqlite-cpp PUBLIC SQLite::SQLite3)
 else()
     target_link_libraries(Sqlite-cpp PUBLIC SQLite3::SQLite3)
